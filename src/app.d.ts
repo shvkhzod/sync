@@ -1,4 +1,8 @@
 declare global {
-  namespace App {}
+  namespace App {
+    interface Locals {
+      authenticated: boolean;
+    }
+  }
 }
 export {};
