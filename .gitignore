@@ -1,0 +1,17 @@
+node_modules
+.svelte-kit
+build
+dist
+.env
+.env.*
+.vercel
+.output
+.claude/
+.agents/
+.DS_Store
+
+# planning / spec docs
+docs/
+instructions.md
+PRODUCT.md
+skills-lock.json

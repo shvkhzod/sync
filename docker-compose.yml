@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: sync_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sync
+      POSTGRES_PASSWORD: sync
+      POSTGRES_DB: sync
+    ports:
+      - "5433:5432"
+    volumes:
+      - sync_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sync -d sync"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  sync_pg_data:
