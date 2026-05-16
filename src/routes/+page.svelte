@@ -1,7 +1,8 @@
 <script lang="ts">
-  import { goto, invalidateAll } from '$app/navigation';
+  import { goto } from '$app/navigation';
   import { tick } from 'svelte';
-  import { createUserThread } from '$lib/mock/store';
+  import { deserialize } from '$app/forms';
+  import type { ActionResult } from '@sveltejs/kit';
   import type { FeedThread } from '$lib/types';
 
   let { data } = $props();
@@ -72,11 +73,19 @@
     const content = composeText.trim();
     if (!content || submitting) return;
     submitting = true;
-    const id = createUserThread({ content, x: 0.5, y: 0.5 });
-    await invalidateAll();
+
+    const fd = new FormData();
+    fd.set('content', content);
+
+    const res = await fetch('?/create', { method: 'POST', body: fd });
+    const result: ActionResult = deserialize(await res.text());
+
     submitting = false;
-    closeCompose();
-    goto(`/thread/${id}`);
+    if (result.type === 'redirect') {
+      closeCompose();
+      await goto(result.location);
+    }
+    // On failure the modal stays open with the text intact — user can retry.
   }
   function onComposeKey(e: KeyboardEvent) {
     if (e.key === 'Escape') { e.preventDefault(); closeCompose(); }

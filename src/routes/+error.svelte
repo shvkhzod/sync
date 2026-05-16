@@ -3,84 +3,81 @@
   import { goto } from '$app/navigation';
 
   function home() {
-    goto('/galaxy');
+    goto('/');
   }
 </script>
 
-<svelte:head><title>Sync — not found</title></svelte:head>
+<svelte:head>
+  <title>Sync — not found</title>
+  <meta name="theme-color" content="#1c5cff" />
+</svelte:head>
 
 <main>
-  <span class="code" aria-hidden="true">{page.status}</span>
-  <p class="message">
-    {#if page.status === 404}
-      this thread is not in your galaxy.
-    {:else}
-      something fell out of orbit.
-    {/if}
-  </p>
-  <button type="button" class="link" onclick={home}>
-    <span class="arrow">←</span> back to galaxy
-  </button>
+  <section class="card">
+    <p class="eyebrow"><span class="ord">{page.status}</span></p>
+    <h1 class="message">
+      {#if page.status === 404}
+        this thread isn't here.
+      {:else}
+        something went sideways.
+      {/if}
+    </h1>
+    <button type="button" class="primary" onclick={home}>back home</button>
+  </section>
 </main>
 
 <style>
   main {
-    min-height: 100dvh;
+    min-height: 100vh;
     display: grid;
     place-items: center;
-    grid-auto-rows: auto;
-    gap: 1.5rem;
-    padding: 8vh 24px;
+    padding: max(16px, env(safe-area-inset-top)) 12px max(16px, env(safe-area-inset-bottom));
+  }
+  .card {
+    background: var(--surface);
+    border-radius: var(--r-card-lg);
+    width: 100%;
+    max-width: 460px;
+    padding: 28px 26px;
+    box-shadow: var(--card-shadow);
     text-align: center;
   }
-
-  .code {
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    color: var(--back-glyph);
-    font-variant-numeric: tabular-nums;
-    font-weight: 500;
+  .eyebrow {
+    margin: 0 0 14px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--ink-meta);
+    letter-spacing: 0.04em;
   }
-
+  .eyebrow .ord { color: var(--accent); font-weight: 600; }
   .message {
-    margin: 0;
-    font-size: 22px;
-    line-height: 1.4;
-    color: var(--thread-warm);
-    font-weight: 500;
-    letter-spacing: -0.025em;
-    max-width: 28ch;
+    margin: 0 0 22px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(28px, 6vw, 38px);
+    line-height: 1.06;
+    letter-spacing: -0.03em;
+    color: var(--ink);
   }
-
-  .link {
+  .primary {
     appearance: none;
     border: 0;
-    background: transparent;
-    color: var(--back-glyph);
-    font: inherit;
-    font-size: 14px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    padding: 14px 28px;
+    border-radius: var(--r-pill);
     cursor: pointer;
-    padding: 12px 16px;
-    border-radius: 999px;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    transition: color 220ms var(--ease-out-expo), background-color 220ms var(--ease-out-expo);
+    min-height: 48px;
+    transition: transform 200ms var(--ease-spring), background-color 180ms var(--ease-out-expo);
   }
-  .link:hover {
-    color: var(--thought-fg);
-    background: color-mix(in srgb, var(--thread-warm) 5%, transparent);
-  }
-  .link:focus-visible {
-    outline: 1px solid var(--thought-fg);
+  .primary:hover { background: var(--accent-deep); }
+  .primary:active { transform: scale(0.96); }
+  .primary:focus-visible {
+    outline: 2.5px solid var(--accent);
     outline-offset: 3px;
   }
-  .link:active { transform: scale(0.97); }
-
-  .arrow {
-    display: inline-block;
-    transition: transform 220ms var(--ease-out-expo);
-  }
-  .link:hover .arrow { transform: translateX(-3px); }
 </style>

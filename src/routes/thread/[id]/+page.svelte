@@ -1,7 +1,8 @@
 <script lang="ts">
   import { goto, invalidateAll } from '$app/navigation';
   import { tick } from 'svelte';
-  import { appendToThread } from '$lib/mock/store';
+  import { deserialize } from '$app/forms';
+  import type { ActionResult } from '@sveltejs/kit';
 
   let { data } = $props();
 
@@ -28,8 +29,14 @@
     const text = continueText.trim();
     if (!text || continueSubmitting) return;
     continueSubmitting = true;
-    const ok = appendToThread(data.thread.id, text);
-    if (ok) {
+
+    const fd = new FormData();
+    fd.set('content', text);
+
+    const res = await fetch('?/append', { method: 'POST', body: fd });
+    const result: ActionResult = deserialize(await res.text());
+
+    if (result.type === 'success') {
       continueText = '';
       await invalidateAll();
       await tick();

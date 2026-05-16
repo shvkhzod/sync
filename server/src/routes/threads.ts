@@ -17,15 +17,16 @@ type IdParams = { id: string };
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function threadsRoutes(app: FastifyInstance): Promise<void> {
-  // List threads, most-recently-updated first, with a thought-count tally for
-  // the feed view. Single query — no N+1.
+  // List threads, most-recently-updated first, with a thought-count tally and
+  // a preview (first thought's content) for the feed view. Single query — no N+1.
   app.get('/threads', async () => {
     const rows = await db
       .select({
         id:        threads.id,
         createdAt: threads.createdAt,
         updatedAt: threads.updatedAt,
-        thoughtCount: sql<number>`count(${thoughts.id})::int`.as('thought_count')
+        thoughtCount: sql<number>`count(${thoughts.id})::int`.as('thought_count'),
+        preview: sql<string | null>`(select content from thoughts where thread_id = ${threads.id} and ordinal = 0 limit 1)`.as('preview')
       })
       .from(threads)
       .leftJoin(thoughts, eq(thoughts.threadId, threads.id))
