@@ -24,10 +24,10 @@ function promptPassword(question: string): Promise<string> {
           process.stdout.write('\n');
           resolve(pw);
           return;
-        } else if (ch === '') {
+        } else if (ch === '\u0003') {
           // ctrl-c
           process.exit(130);
-        } else if (ch === '' || ch === '\b') {
+        } else if (ch === '\u007f' || ch === '\b') {
           // backspace / delete
           pw = pw.slice(0, -1);
         } else {
@@ -41,7 +41,7 @@ function promptPassword(question: string): Promise<string> {
 
 const pw = await promptPassword('Password (no echo): ');
 if (!pw) {
-  console.error('Empty password â€” aborting.');
+  console.error('Empty password — aborting.');
   process.exit(1);
 }
 const hash = await bcrypt.hash(pw, 12);
