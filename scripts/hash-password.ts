@@ -41,7 +41,7 @@ function promptPassword(question: string): Promise<string> {
 
 const pw = await promptPassword('Password (no echo): ');
 if (!pw) {
-  console.error('Empty password — aborting.');
+  console.error('Empty password â€” aborting.');
   process.exit(1);
 }
 const hash = await bcrypt.hash(pw, 12);
